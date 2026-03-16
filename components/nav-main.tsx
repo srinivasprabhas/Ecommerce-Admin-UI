@@ -1,5 +1,6 @@
 "use client"
 
+import { usePathname } from "next/navigation"
 import {
   Collapsible,
   CollapsibleContent,
@@ -23,8 +24,8 @@ export function NavMain({
 }: {
   items: {
     title: string
-    url: string
-    icon: React.ReactNode
+    url?: string
+    icon?: React.ReactNode
     isActive?: boolean
     items?: {
       title: string
@@ -32,15 +33,20 @@ export function NavMain({
     }[]
   }[]
 }) {
+  const pathname = usePathname()
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
-          <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
+        {items.map((item) => {
+          const isActive = item.url
+            ? pathname === item.url
+            : (item.items?.some((s) => pathname === s.url) ?? false)
+          return (
+          <Collapsible key={item.title} asChild defaultOpen={isActive || item.isActive}>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
+              <SidebarMenuButton asChild tooltip={item.title} isActive={isActive}>
+                <a href={item.url ?? "#"}>
                   {item.icon}
                   <span>{item.title}</span>
                 </a>
@@ -71,7 +77,8 @@ export function NavMain({
               ) : null}
             </SidebarMenuItem>
           </Collapsible>
-        ))}
+          )
+        })}
       </SidebarMenu>
     </SidebarGroup>
   )

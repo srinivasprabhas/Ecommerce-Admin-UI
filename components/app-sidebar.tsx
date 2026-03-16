@@ -15,7 +15,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { LifeBuoyIcon, SendIcon, FrameIcon, PieChartIcon, MapIcon, TerminalIcon } from "lucide-react"
+import { LifeBuoyIcon, SendIcon, FrameIcon, PieChartIcon, MapIcon, TerminalIcon, TrendingUpIcon, BarChart3 } from "lucide-react"
+
+type NavMainItem = {
+  title: string
+  url?: string
+  icon?: React.ReactNode
+  items?: { title: string; url: string }[]
+}
 
 const data = {
   user: {
@@ -46,6 +53,16 @@ const data = {
       url: "/customers",
     },
     {
+      title: "Sales",
+      url: "/sales",
+      icon: <TrendingUpIcon />,
+    },
+    {
+      title: "Website Analytics",
+      url: "/website-analytics",
+      icon: <BarChart3 />,
+    },
+    {
       title: "Analytics",
       url: "/analytics",
     },
@@ -53,7 +70,7 @@ const data = {
       title: "Settings",
       url: "/settings",
     },
-  ],
+  ] as NavMainItem[],
   navSecondary: [
     {
       title: "Support",
