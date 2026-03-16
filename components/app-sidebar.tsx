@@ -31,14 +31,14 @@ const data = {
     {
       title: "Products",
       items: [
-        { title: "Product List", url: "/products" },
+        { title: "Product List", url: "/products/list" },
         { title: "Add Product", url: "/products/create" },
       ],
     },
     {
       title: "Orders",
       items: [
-        { title: "Order List", url: "/orders" },
+        { title: "Order List", url: "/orders/list" },
       ],
     },
     {
