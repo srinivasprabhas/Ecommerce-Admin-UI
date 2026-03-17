@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Filter, SlidersHorizontal } from "lucide-react";
+import { Download, Filter, SlidersHorizontal } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -28,10 +28,10 @@ import { cn } from "@/lib/utils";
 type OrderStatus = "New Order" | "In Progress" | "On Hold" | "Completed";
 
 const STATUS_STYLE: Record<OrderStatus, string> = {
-  "New Order": "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-0",
-  "In Progress": "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-0",
-  "On Hold": "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-0",
-  Completed: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-0",
+  "New Order": "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+  "In Progress": "bg-orange-500/10 text-orange-600 dark:text-orange-400",
+  "On Hold": "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400",
+  Completed: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
 };
 
 const ORDERS = [
@@ -47,6 +47,7 @@ const COLUMNS = ["ID", "Customer Name", "Qty Items", "Amount", "Payment Method",
 export function SalesTable() {
   const [filter, setFilter] = useState("");
   const [visibleCols, setVisibleCols] = useState<Set<string>>(new Set(COLUMNS));
+  const selectedCount = 0;
 
   const filtered = ORDERS.filter(
     (o) =>
@@ -55,17 +56,17 @@ export function SalesTable() {
   );
 
   return (
-    <Card className="rounded-xl border">
-      <CardHeader>
-        <CardTitle className="text-base font-semibold">Orders</CardTitle>
-        <CardDescription>Recent orders with filters</CardDescription>
+    <Card className="rounded-xl border border-border/60 bg-card/80 shadow-sm backdrop-blur transition-all duration-200">
+      <CardHeader className="space-y-2 p-4 sm:p-5">
+        <CardTitle className="text-lg font-semibold">Orders</CardTitle>
+        <CardDescription className="text-sm text-muted-foreground">Recent orders with filters</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <CardContent className="space-y-4 p-4 pt-0 sm:p-5 sm:pt-0">
+        <div className="flex items-center justify-between gap-4">
           <div className="relative w-full max-w-xs">
             <Filter className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Filter orders"
+              placeholder="Filter orders..."
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               className="pl-8"
@@ -74,8 +75,8 @@ export function SalesTable() {
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-9">
-                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                <Button variant="outline" size="sm" className="h-9 gap-2 transition-all duration-200">
+                  <SlidersHorizontal className="h-4 w-4" />
                   Columns
                 </Button>
               </DropdownMenuTrigger>
@@ -100,32 +101,48 @@ export function SalesTable() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant="outline" size="sm" className="h-9">
+            <Button variant="outline" size="sm" className="h-9 gap-2 transition-all duration-200">
+              <Download className="h-4 w-4" />
               Export
             </Button>
           </div>
         </div>
 
-        <div className="rounded-lg border border-border">
+        <div className="rounded-lg border border-border/50 bg-background">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/40">
+              <TableRow className="border-border/50 bg-muted/30 hover:bg-muted/30">
                 {COLUMNS.filter((c) => visibleCols.has(c)).map((col) => (
-                  <TableHead key={col}>{col}</TableHead>
+                  <TableHead key={col} className="py-3 text-sm text-muted-foreground">
+                    {col}
+                  </TableHead>
                 ))}
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.map((row) => (
-                <TableRow key={row.id}>
-                  {visibleCols.has("ID") && <TableCell className="font-medium">{row.id}</TableCell>}
-                  {visibleCols.has("Customer Name") && <TableCell>{row.customer}</TableCell>}
-                  {visibleCols.has("Qty Items") && <TableCell>{row.qty} items</TableCell>}
-                  {visibleCols.has("Amount") && <TableCell>${row.amount.toFixed(2)}</TableCell>}
-                  {visibleCols.has("Payment Method") && <TableCell>{row.payment}</TableCell>}
+                <TableRow
+                  key={row.id}
+                  className="h-12 border-border/50 transition-all duration-200 hover:bg-muted/30"
+                >
+                  {visibleCols.has("ID") && (
+                    <TableCell className="h-12 px-4 font-medium">{row.id}</TableCell>
+                  )}
+                  {visibleCols.has("Customer Name") && (
+                    <TableCell className="h-12 px-4">{row.customer}</TableCell>
+                  )}
+                  {visibleCols.has("Qty Items") && (
+                    <TableCell className="h-12 px-4">{row.qty} items</TableCell>
+                  )}
+                  {visibleCols.has("Amount") && (
+                    <TableCell className="h-12 px-4">${row.amount.toFixed(2)}</TableCell>
+                  )}
+                  {visibleCols.has("Payment Method") && (
+                    <TableCell className="h-12 px-4">{row.payment}</TableCell>
+                  )}
                   {visibleCols.has("Status") && (
-                    <TableCell>
-                      <Badge className={cn("text-xs", STATUS_STYLE[row.status])}>
+                    <TableCell className="h-12 px-4">
+                      <Badge className={cn("rounded-full px-3 py-1 text-xs font-medium", STATUS_STYLE[row.status])}>
                         {row.status}
                       </Badge>
                     </TableCell>
@@ -134,6 +151,19 @@ export function SalesTable() {
               ))}
             </TableBody>
           </Table>
+        </div>
+
+        {/* Footer: selection count + pagination */}
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <span>{selectedCount} of {filtered.length} row(s) selected.</span>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" className="h-8">
+              Previous
+            </Button>
+            <Button variant="ghost" size="sm" className="h-8">
+              Next
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
